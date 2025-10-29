@@ -8,11 +8,12 @@
 #include "models/graph_model.h"
 
 template <typename Stream>
-void checkStream(const Stream& stream, const std::string& filename) {
+bool checkStream(const Stream& stream, const std::string& filename) {
     if (!stream.is_open()) {
         std::cerr << std::format("Failed to open file: {}", filename) << std::endl;
-        exit(1);
+        return false;
     }
+    return true;
 }
 
 int main(int argc, char* argv[]) {
@@ -38,14 +39,15 @@ int main(int argc, char* argv[]) {
     std::ifstream infile(input);
     std::ofstream outfile(output);
 
-    checkStream(infile, input);
-    checkStream(outfile, output);
+    if (!checkStream(infile, input) || !checkStream(outfile, output)) {
+        return 1;
+    }
 
-    auto parser = std::make_unique<DiagramParser>();
-    auto codegen = std::make_unique<Codegen>();
+    auto parser = DiagramParser();
+    auto codegen = Codegen();
     try {
-        Graph graph = parser->parse(infile);
-        auto instructions = codegen->generateCode(graph);
+        Graph graph = parser.parse(infile);
+        auto instructions = codegen.generateCode(graph);
         for (const auto& instr : instructions) {
             outfile << instr->emit() << std::endl;
         }
