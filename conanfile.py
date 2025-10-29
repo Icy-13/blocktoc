@@ -12,6 +12,7 @@ class Recipe(ConanFile):
 
     def requirements(self):
         self.requires("pugixml/1.15")
+        self.requires("cxxopts/3.3.1")
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.15]")
