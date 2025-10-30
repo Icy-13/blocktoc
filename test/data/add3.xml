@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<System>
+ <Block BlockType="Inport" Name="in1" SID="1">
+ <P Name="Position">[-20, 403, 10, 417]</P>
+ <Port>
+ <P Name="PortNumber">1</P>
+ <P Name="Name">in1</P>
+ </Port>
+ </Block>
+ <Block BlockType="Inport" Name="in2" SID="2">
+ <P Name="Position">[-20, 453, 10, 467]</P>
+ <P Name="Port">2</P>
+ <Port>
+ <P Name="PortNumber">1</P>
+ <P Name="Name">in2</P>
+ </Port>
+ </Block>
+ <Block BlockType="Inport" Name="in3" SID="3">
+ <P Name="Position">[-20, 453, 10, 467]</P>
+ <P Name="Port">2</P>
+ <Port>
+ <P Name="PortNumber">1</P>
+ <P Name="Name">in3</P>
+ </Port>
+ </Block>
+ <Block BlockType="Sum" Name="Add3" SID="15">
+ <P Name="Ports">[3, 1]</P>
+ <P Name="Position">[105, 402, 135, 433]</P>
+ <P Name="IconShape">rectangular</P>
+ <P Name="Inputs">-+-</P>
+ </Block>
+ <Block BlockType="Outport" Name="out" SID="52">
+ <P Name="Position">[565, 423, 595, 437]</P>
+ </Block>
+ <Line>
+ <P Name="Src">1#out:1</P>
+ <P Name="Dst">15#in:2</P>
+ </Line>
+ <Line>
+ <P Name="Src">2#out:1</P>
+ <P Name="Dst">15#in:3</P>
+ </Line>
+ <Line>
+ <P Name="Src">3#out:1</P>
+ <P Name="Dst">15#in:1</P>
+ </Line>
+ <Line>
+ <P Name="Src">15#out:1</P>
+ <P Name="Dst">52#in:1</P>
+ </Line>
+</System>

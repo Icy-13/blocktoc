@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<System>
+ <Block BlockType="Inport" Name="in1" SID="1">
+ </Block>
+ <Block BlockType="Sum" Name="Add" SID="2">
+ <P Name="Position">[210, 500, 240, 530]</P>
+ </Block>
+ <Block BlockType="UnitDelay" Name="Unit Delay1" SID="3">
+ <P Name="Position">[350, 573, 385, 607]</P>
+ <P Name="SampleTime">-1</P>
+ </Block>
+ <Block BlockType="UnitDelay" Name="Unit Delay2" SID="4">
+ <P Name="Position">[350, 573, 385, 607]</P>
+ <P Name="SampleTime">-1</P>
+ </Block>
+ <Block BlockType="Outport" Name="command" SID="5">
+ <P Name="Position">[565, 423, 595, 437]</P>
+ </Block>
+ <Line>
+ <P Name="Src">1#out:1</P>
+ <P Name="Dst">2#in:1</P>
+ </Line>
+ <Line>
+ <P Name="Src">3#out:1</P>
+ <P Name="Dst">2#in:2</P>
+ </Line>
+ <Line>
+ <P Name="Src">2#out:1</P>
+ <P Name="Dst">4#in:1</P>
+ </Line>
+ <Line>
+ <P Name="Src">4#out:1</P>
+ <P Name="Dst">3#in:1</P>
+ </Line>
+ <Line>
+ <P Name="Src">4#out:2</P>
+ <P Name="Dst">5#in:1</P>
+ </Line>
+</System>

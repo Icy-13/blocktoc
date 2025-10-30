@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<System>
+ <Block BlockType="Inport" Name="setpoint" SID="1">
+ <P Name="Position">[-20, 403, 10, 417]</P>
+ <Port>
+ <P Name="PortNumber">1</P>
+ <P Name="Name">setpoint</P>
+ </Port>
+ </Block>
+ <Block BlockType="Gain" Name="I_gain" SID="42">
+ <P Name="Position">[210, 500, 240, 530]</P>
+ <P Name="Gain">2</P>
+ </Block>
+ <Block BlockType="Outport" Name="output" SID="15">
+ <P Name="Position">[565, 423, 595, 437]</P>
+ </Block>
+ <Line>
+ <P Name="Src">1#out:1</P>
+ <P Name="Dst">42#in:1</P>
+ </Line>
+ <Line>
+ <P Name="Src">42#out:1</P>
+ <P Name="Dst">15#in:1</P>
+ </Line>
+</System>
