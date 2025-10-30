@@ -59,7 +59,6 @@ std::vector<std::size_t> buildTopsort(const Graph& graph,
 
 void generateHeaders(std::vector<InstructionPtr>& instructions) {
     instructions.push_back(std::make_shared<Instruction>("#include <math.h>"));
-    instructions.push_back(std::make_shared<Instruction>("#include \"state_run.h\"\n"));
 }
 
 void generateStruct(const Graph& graph, std::vector<InstructionPtr>& instructions) {
@@ -100,7 +99,12 @@ void generateStepFunction(const Graph& graph,
             }
             std::string_view operation;
             if (block->params.contains("Inputs")) {
-                operation = std::string{block->params["Inputs"][i]};
+                for (auto& [block_id, port_index] : graph.adj.at(input_id)) {
+                    if (block_id == block->id) {
+                        operation = std::string{block->params["Inputs"][port_index - 1]};
+                        break;
+                    }
+                }
             } else {
                 operation = impl::getOperation(block->type);
             }
@@ -136,6 +140,12 @@ void generateStepFunction(const Graph& graph,
 void generateTable(const Graph& graph,
                    std::vector<InstructionPtr>& instructions,
                    const std::vector<std::size_t>& order) {
+    instructions.push_back(std::make_shared<Instruction>("typedef struct {"));
+    instructions.push_back(std::make_shared<Instruction>("    const char* name;"));
+    instructions.push_back(std::make_shared<Instruction>("    double* address;"));
+    instructions.push_back(std::make_shared<Instruction>("    int is_input;"));
+    instructions.push_back(std::make_shared<Instruction>("} state_ExtPort;\n"));
+
     instructions.push_back(std::make_shared<Instruction>("static const state_ExtPort ext_ports[] = {"));
 
     auto generateEntry = [&](Graph::BlockPtr block, bool isInput) {
@@ -173,7 +183,7 @@ std::vector<InstructionPtr> Codegen::generateCode(const Graph& graph) {
 
     auto bannedEdges = buildBannedEdges(graph);
     auto order = buildTopsort(graph, bannedEdges);
-    
+
     generateInitFunction(graph, instructions, order);
     generateStepFunction(graph, instructions, order);
     generateTable(graph, instructions, order);
