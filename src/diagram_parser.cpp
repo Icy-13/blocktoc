@@ -32,10 +32,12 @@ std::optional<Connection> parseConnection(const std::string& data) {
         } else if (direction == "out") {
             conn.is_input = false;
         } else {
+            std::cerr << std::format("Warning: Invalid connection direction: {}", direction) << std::endl;
             return std::nullopt;
         }
         return conn;
-    } catch (const std::exception&) {
+    } catch (const std::exception& e) {
+        std::cerr << std::format("Warning: Failed to parse connection data: {}\n exception: {}", data, e.what()) << std::endl;
         return std::nullopt;
     }
 }
@@ -57,25 +59,14 @@ void parseConnections(std::vector<Connection>& srcs, std::vector<Connection>& ds
     }
 }
 
-Graph DiagramParser::parse(std::istream& data) {
-    pugi::xml_document initialDoc;
-    auto result = initialDoc.load(data);
-    if (!result) {
-        throw std::runtime_error(std::format("Failed to parse XML: {}\n Error offset: {}",
-                                             result.description(), result.offset));
-    }
-    auto doc = initialDoc.child("System");
-    if (doc.type() == pugi::node_null) {
-        throw std::runtime_error("No <System> root node found in XML.");
-    }
-
-    Graph graph;
+void parseBlocks(Graph& graph, pugi::xml_node doc) {
     for (const auto& node : doc.children("Block")) {
         auto block = std::make_shared<Block>();
         block->id = node.attribute("SID").as_ullong();
         block->name = node.attribute("Name").as_string();
         block->type = node.attribute("BlockType").as_string();
         if (block->id == 0 || block->name.empty() || block->type.empty()) {
+            std::cerr << std::format("Warning: Skipping invalid block with ID {}", block->id) << std::endl;
             continue;
         }
         // replace all spaces with _
@@ -88,7 +79,9 @@ Graph DiagramParser::parse(std::istream& data) {
 
         graph.idToBlock[block->id] = block;
     }
+}
 
+void parseConnections(Graph& graph, pugi::xml_node doc) {
     for (const auto& node : doc.children("Line")) {
         std::vector<Connection> srcs, dsts;
         parseConnections(srcs, dsts, node);
@@ -109,5 +102,22 @@ Graph DiagramParser::parse(std::istream& data) {
             }
         }
     }
+}
+
+Graph DiagramParser::parse(std::istream& data) {
+    pugi::xml_document initialDoc;
+    auto result = initialDoc.load(data);
+    if (!result) {
+        throw std::runtime_error(std::format("Failed to parse XML: {}\n Error offset: {}",
+                                             result.description(), result.offset));
+    }
+    auto doc = initialDoc.child("System");
+    if (doc.type() == pugi::node_null) {
+        throw std::runtime_error("No <System> root node found in XML.");
+    }
+
+    Graph graph;
+    parseBlocks(graph, doc);
+    parseConnections(graph, doc);
     return graph;
 }

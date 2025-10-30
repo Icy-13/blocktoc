@@ -2,9 +2,10 @@
 
 #include <vector>
 
-#include "i_codegen.h"
+#include "models/graph_model.h"
+#include "models/codegen_model.h"
 
-class Codegen : public ICodegen {
+class Codegen {
 public:
-    std::vector<InstructionPtr> generateCode(const Graph& graph) override;
+    std::vector<InstructionPtr> generateCode(const Graph& graph);
 };

@@ -11,10 +11,8 @@ add_executable(BlockToC
     src/block_to_c.cpp
     src/diagram_parser.cpp
     src/diagram_parser.h
-    src/i_diagram_parser.h
     src/models/graph_model.h
     src/models/codegen_model.h
-    src/i_codegen.h
     src/codegen.cpp
     src/codegen.h
 )

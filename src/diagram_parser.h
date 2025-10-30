@@ -1,9 +1,10 @@
 #pragma once
 
-#include "i_diagram_parser.h"
+#include <istream>
 
-class DiagramParser : public IDiagramParser {
+#include "models/graph_model.h"
+
+class DiagramParser {
 public:
-    Graph parse(std::istream& data) override;
-    ~DiagramParser() override = default;
+    Graph parse(std::istream& data);
 };
